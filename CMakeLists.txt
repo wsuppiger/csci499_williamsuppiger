@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
-
 project(csci499_williamsuppiger VERSION 1.0.0 LANGUAGES CXX)
+include(FetchContent)
 
-add_executable(app
-  src/keyValue.cc)
+enable_testing()
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        release-1.10.0
+)
 
-target_compile_features(app PRIVATE cxx_std_17)
 
-target_compile_options(app PRIVATE -Wall -Wextra -Wpedantic)
+# add_executable(app
+#   src/keyValue.cc)
+#
+# target_compile_features(app PRIVATE cxx_std_17)
+# target_compile_options(app PRIVATE -Wall -Wextra -Wpedantic)
+
 
