@@ -12,6 +12,7 @@ namespace backend {
 // TODO: CHANGE BYTES TYPE
 typedef std::string BYTES;
 
+// key value storage for backend application
 class KeyValue {
  public:
   KeyValue() {}
