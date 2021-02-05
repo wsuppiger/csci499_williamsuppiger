@@ -9,23 +9,20 @@
 
 namespace backend {
 
-// TODO: CHANGE BYTES TYPE
-typedef std::string BYTES;
-
 // key value storage for backend application
 class KeyValue {
  public:
-  KeyValue() storage_() {}
+  KeyValue(): storage_() {}
 
   virtual ~KeyValue() {}
 
-  void Put(const BYTES& key, const BYTES& value);
-  void Get(const BYTES& key) const;
-  void Remove(const BYTES& remove);
+  void Put(const std::string& key, const std::string& value);
+  void Get(const std::string& key) const;
+  void Remove(const std::string& remove);
 
  private:
   // stores key value pairs in map of vectors
-  std::unordered_map<BYTES, std::vector<BYTES>> storage_;
+  std::unordered_map<std::string, std::vector<std::string>> storage_;
 };
 }  // namespace backend
 
