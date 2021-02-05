@@ -8,11 +8,14 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG        release-1.10.0
 )
-
+FetchContent_MakeAvailable(googletest)
 
 # add_executable(app
-#   src/keyValue.cc)
-#
+#   src/key_value.cc)
+
+add_executable(key_value_test src/key_value.cc)
+target_link_libraries(key_value_test gtest_main)
+
 # target_compile_features(app PRIVATE cxx_std_17)
 # target_compile_options(app PRIVATE -Wall -Wextra -Wpedantic)
 
