@@ -15,7 +15,7 @@ typedef std::string BYTES;
 // key value storage for backend application
 class KeyValue {
  public:
-  KeyValue() {}
+  KeyValue() storage_() {}
 
   virtual ~KeyValue() {}
 
