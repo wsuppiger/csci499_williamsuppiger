@@ -19,9 +19,9 @@ class KeyValue {
 
   virtual ~KeyValue() {}
 
-  void put(const BYTES& key, const BYTES& value);
-  void get(const BYTES& key) const;
-  void remove(const BYTES& remove);
+  void Put(const BYTES& key, const BYTES& value);
+  void Get(const BYTES& key) const;
+  void Remove(const BYTES& remove);
 
  private:
   // stores key value pairs in map of vectors

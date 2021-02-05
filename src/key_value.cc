@@ -1,18 +1,18 @@
 // Copyright (c) 2021, USC
 // All rights reserved.
 
-#include "key_value.h"
+#include "/src/key_value.h"
 
 namespace backend {
 
-void KeyValue::put(const BYTES& key, const BYTES& value) {
+void KeyValue::Put(const BYTES& key, const BYTES& value) {
   // implementation here
 }
 
-void KeyValue::get(const BYTES& key) const {
+void KeyValue::Get(const BYTES& key) const {
   // implementation here
 }
-void KeyValue::remove(const BYTES& remove) {
+void KeyValue::Remove(const BYTES& remove) {
   // implementation here
 }
 
