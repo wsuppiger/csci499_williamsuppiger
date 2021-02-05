@@ -17,13 +17,14 @@ class KeyValue {
  public:
   KeyValue() {}
 
-  ~KeyValue() {}
+  virtual ~KeyValue() {}
 
   void put(const BYTES& key, const BYTES& value);
   void get(const BYTES& key) const;
   void remove(const BYTES& remove);
 
  private:
+  // stores key value pairs in map of vectors
   std::unordered_map<BYTES, std::vector<BYTES>> storage_;
 };
 }  // namespace backend
