@@ -1,5 +1,6 @@
 // Copyright (c) 2021, USC
 // All rights reserved.
+
 #ifndef SRC_KEY_VALUE_H_
 #define SRC_KEY_VALUE_H_
 
@@ -12,12 +13,12 @@ namespace backend {
 // key value storage for backend application
 class KeyValue {
  public:
-  KeyValue(): storage_() {}
+  KeyValue() : storage_() {}
 
   virtual ~KeyValue() {}
 
   void Put(const std::string& key, const std::string& value);
-  void Get(const std::string& key) const;
+  std::vector<std::string> Get(const std::string& key) const;
   void Remove(const std::string& remove);
 
  private:
