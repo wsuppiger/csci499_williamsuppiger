@@ -33,3 +33,6 @@
 
 # build folder
 /build/
+
+# syntastic
+.syntastic_cpp_config_file
