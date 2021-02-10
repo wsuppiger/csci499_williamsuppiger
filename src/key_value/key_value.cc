@@ -5,7 +5,7 @@
 
 #include <glog/logging.h>
 
-namespace backend {
+namespace csci499 {
 
 void KeyValue::Put(const std::string& key, const std::string& value) {
   lock_.lock();
@@ -34,11 +34,11 @@ std::vector<std::string> KeyValue::Get(const std::string& key) {
   return {};
 }
 
-void KeyValue::Remove(const std::string& remove) {
+void KeyValue::Remove(const std::string& key) {
   lock_.lock();
-  storage_.erase(remove);
+  storage_.erase(key);
   lock_.unlock();
   LOG(INFO) << "removed any existing values for key " << key << "\n";
 }
 
-}  // namespace backend
+}  // namespace csci499

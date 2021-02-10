@@ -1,17 +1,20 @@
 // Copyright (c) 2021, USC
 // All rights reserved.
 
-#ifndef SRC_KEY_VALUE_SERVER_H_
-#define SRC_KEY_VALUE_SERVER_H_
+#ifndef SRC_KEY_VALUE_KEY_VALUE_SERVER_H_
+#define SRC_KEY_VALUE_KEY_VALUE_SERVER_H_
+
+#include <grpcpp/grpcpp.h>
 
 #include "key_value.grpc.pb.h"
 #include "key_value.h"
 
-namespace backend {
+namespace csci499 {
 
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
+using grpc::ServerReaderWriter;
 using grpc::Status;
 
 using kvstore::GetReply;
@@ -22,8 +25,9 @@ using kvstore::PutRequest;
 using kvstore::RemoveReply;
 using kvstore::RemoveRequest;
 
-// key value server implementtaion for backend
+// key value server implementtaion for csci499
 class KeyValueServer final : public KeyValueStore::Service {
+ public:
   KeyValueServer() : storage_() {}
 
   // grpc put call
@@ -42,7 +46,7 @@ class KeyValueServer final : public KeyValueStore::Service {
   // key value storage object
   KeyValue storage_;
   // lock for key value storeage object
-}
+};
 
-}  // namespace backend
-#endif  // SRC_KEY_VALUE_SERVER_H_
+}  // namespace csci499
+#endif  // SRC_KEY_VALUE_KEY_VALUE_SERVER_H_

@@ -36,3 +36,7 @@
 
 # syntastic
 .syntastic_cpp_config_file
+
+# vs code
+.DS_Store
+.vscode/

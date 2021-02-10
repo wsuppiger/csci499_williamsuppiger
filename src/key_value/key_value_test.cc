@@ -6,9 +6,11 @@
 
 #include <vector>
 
-namespace backend {
+namespace {
 
-// test initialization of backend
+using csci499::KeyValue;
+
+// test initialization of csci499
 TEST(KeyValue, OneVectOneValue) {
   KeyValue test;
   test.Put("a", "0");
@@ -39,6 +41,7 @@ TEST(KeyValue, RemoveEmpty) {
   KeyValue test;
   std::vector<std::string> empty;
   test.Remove("a");
+  EXPECT_EQ(test.Get("a"), empty);
 }
 
 TEST(KeyValue, RemoveOneElement) {
@@ -64,4 +67,4 @@ TEST(KeyValue, Empty) {
   EXPECT_EQ(test.Get("a"), empty);
 }
 
-}  // namespace backend
+}  // namespace
