@@ -14,8 +14,8 @@ namespace backend {
 Status KeyValueServer::put(ServerContext* context, const PutRequest* request,
                            PutReply* reply) override {
   storage_.Put(PutRequest->key(), PutRequest->value());
-  LOG(INFO) << "put key value pair " << PutRequest->key() << " "
-            << PutRequest->value();
+  LOG(INFO) << "rpc put key value pair " << PutRequest->key() << " "
+            << PutRequest->value() << "\n";
   return Status::OK;
 }
 
@@ -28,7 +28,7 @@ Status get(ServerContext* context,
   for (auto v : values) {
     stream->Write(v);
   }
-  LOG(INFO) << "get request on key " << key;
+  LOG(INFO) << "rpc get request on key " << key << "\n";
   return Status::OK;
 }
 
@@ -36,7 +36,7 @@ Status KeyValueServer::remove(ServerContext* context,
                               const RemoveRequest* request,
                               RemoveReply* reply) override {
   storage_.Remove(request->key());
-  LOG(INFO) << "removed key " << request->key();
+  LOG(INFO) << "rpc removed key " << request->key() << "\n";
   return Status::OK;
 }
 
