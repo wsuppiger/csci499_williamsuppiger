@@ -23,6 +23,14 @@ set(_GRPC_GRPCPP grpc++)
 set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:grpc_cpp_plugin>)
 set(_PROTOBUF_LIBPROTOBUF libprotobuf)
 
+# add GLOG library
+FetchContent_Declare(
+  glog
+  GIT_REPOSITORY https://github.com/google/glog
+  GIT_TAG        v0.4.0
+  )
+FetchContent_MakeAvailable(glog)
+
 # protobuf setup
 set(protobuf_MODULE_COMPATIBLE TRUE)
 message(STATUS "Using protobuf")
