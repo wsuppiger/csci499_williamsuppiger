@@ -45,7 +45,6 @@ class KeyValueServer final : public KeyValueStore::Service {
  private:
   // key value storage object
   KeyValue storage_;
-  // lock for key value storeage object
 };
 
 }  // namespace csci499
