@@ -10,13 +10,14 @@ namespace {
 
 using csci499::KeyValue;
 
-// test initialization of csci499
+// insert of one value for one key
 TEST(KeyValue, OneVectOneValue) {
   KeyValue test;
   test.Put("a", "0");
   EXPECT_EQ(test.Get("a")[0], "0");
 }
 
+// insert of two values for one key
 TEST(KeyValue, OneVectTwoValues) {
   KeyValue test;
   test.Put("a", "0");
@@ -25,6 +26,7 @@ TEST(KeyValue, OneVectTwoValues) {
   EXPECT_EQ(test.Get("a")[1], "1");
 }
 
+// insert of two values each for two keys
 TEST(KeyValue, TwoVectTwoTwoValues) {
   KeyValue test;
   test.Put("a", "0");
@@ -37,6 +39,7 @@ TEST(KeyValue, TwoVectTwoTwoValues) {
   EXPECT_EQ(test.Get("b")[1], "3");
 }
 
+// remove an empty key
 TEST(KeyValue, RemoveEmpty) {
   KeyValue test;
   std::vector<std::string> empty;
@@ -44,6 +47,7 @@ TEST(KeyValue, RemoveEmpty) {
   EXPECT_EQ(test.Get("a"), empty);
 }
 
+// remove one element
 TEST(KeyValue, RemoveOneElement) {
   KeyValue test;
   test.Put("a", "0");
@@ -52,6 +56,7 @@ TEST(KeyValue, RemoveOneElement) {
   EXPECT_EQ(test.Get("a"), empty);
 }
 
+// remove two elements from key
 TEST(KeyValue, RemoveTwoElement) {
   KeyValue test;
   test.Put("a", "0");
@@ -61,6 +66,7 @@ TEST(KeyValue, RemoveTwoElement) {
   EXPECT_EQ(test.Get("a"), empty);
 }
 
+// return empty for no insertions
 TEST(KeyValue, Empty) {
   KeyValue test;
   std::vector<std::string> empty;

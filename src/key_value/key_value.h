@@ -18,8 +18,13 @@ class KeyValue {
 
   virtual ~KeyValue() {}
 
+  // stores key value pair
   void Put(const std::string& key, const std::string& value);
+
+  // returns a vector of all values for a given key
   std::vector<std::string> Get(const std::string& key);
+
+  // removes all values for a given key
   void Remove(const std::string& key);
 
  private:
