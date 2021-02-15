@@ -24,10 +24,10 @@ class KeyValueClient {
   explicit KeyValueClient(std::shared_ptr<Channel> channel)
       : stub_(KeyValueStore::NewStub(channel)) {}
 
-  ~KeyValueClient() {}
+  virtual ~KeyValueClient() {}
 
   // package and send rpc call put to server
-  void Put(const std::string& key, const std::string& value);
+  bool Put(const std::string& key, const std::string& value);
 
   // package and retrieve rpc call get from server
   std::vector<std::string> Get(const std::string& key);
