@@ -18,7 +18,7 @@ using kvstore::PutRequest;
 using kvstore::RemoveReply;
 using kvstore::RemoveRequest;
 
-void KeyValueClient::Put(const std::string& key, const std::string& value) {
+bool KeyValueClient::Put(const std::string& key, const std::string& value) {
   PutRequest request;
   request.set_key(key);
   request.set_value(value);
@@ -31,6 +31,7 @@ void KeyValueClient::Put(const std::string& key, const std::string& value) {
   } else {
     LOG(WARNING) << "Put request failed from client for key " << key;
   }
+  return status.ok();
 }
 
 std::vector<std::string> KeyValueClient::Get(const std::string& key) {
