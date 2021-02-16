@@ -26,7 +26,7 @@ void RunServer() {
 
   // Assembling the server
   std::unique_ptr<Server> server(builder.BuildAndStart());
-  LOG(INFO) << "Server listening on port: " << server_address << "\n";
+  LOG(INFO) << "Server listening on port: " << server_address;
 
   server->Wait();
 }

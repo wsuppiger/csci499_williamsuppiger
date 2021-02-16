@@ -63,6 +63,5 @@ set (KV_DIR "src/key_value")
 add_executable(key_value_test ${KV_DIR}/key_value_test.cc ${KV_DIR}/key_value.cc)
 target_link_libraries(key_value_test gtest_main glog::glog)
 
-add_executable(key_value_run ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs})
-target_link_libraries(key_value_run ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
-
+add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs})
+target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)

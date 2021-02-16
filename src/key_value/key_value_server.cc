@@ -15,7 +15,7 @@ Status KeyValueServer::put(ServerContext* context, const PutRequest* request,
                            PutReply* reply) {
   storage_.Put(request->key(), request->value());
   LOG(INFO) << "rpc put key value pair " << request->key() << " "
-            << request->value() << "\n";
+            << request->value();
   return Status::OK;
 }
 
@@ -30,7 +30,7 @@ Status KeyValueServer::get(ServerContext* context,
     reply.set_value(v);
     stream->Write(reply);
   }
-  LOG(INFO) << "rpc get request on key " << key << "\n";
+  LOG(INFO) << "rpc get request on key " << key;
   return Status::OK;
 }
 
@@ -38,7 +38,7 @@ Status KeyValueServer::remove(ServerContext* context,
                               const RemoveRequest* request,
                               RemoveReply* reply) {
   storage_.Remove(request->key());
-  LOG(INFO) << "rpc removed key " << request->key() << "\n";
+  LOG(INFO) << "rpc removed key " << request->key();
   return Status::OK;
 }
 
