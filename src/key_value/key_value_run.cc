@@ -15,7 +15,7 @@ using grpc::ServerContext;
 using grpc::ServerReaderWriter;
 using grpc::Status;
 
-void RunServer() {
+void RunKVServer() {
   std::string server_address("0.0.0.0:50001");
   KeyValueServer service;
 
@@ -36,6 +36,6 @@ void RunServer() {
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
 
-  csci499::RunServer();
+  csci499::RunKVServer();
   return 0;
 }
