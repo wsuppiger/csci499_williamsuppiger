@@ -9,7 +9,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "../key_value/key_value_client.h"
+#include "../key_value/key_value_interface.h"
 #include "caw.grpc.pb.h"
 
 namespace csci499 {
@@ -18,16 +18,16 @@ using google::protobuf::Any;
 using grpc::Status;
 using grpc::StatusCode;
 
-using caw::RegisteruserRequest;
-using caw::RegisteruserReply;
-using caw::CawRequest;
 using caw::CawReply;
-using caw::FollowRequest;
+using caw::CawRequest;
 using caw::FollowReply;
-using caw::ReadRequest;
-using caw::ReadReply;
-using caw::ProfileRequest;
+using caw::FollowRequest;
 using caw::ProfileReply;
+using caw::ProfileRequest;
+using caw::ReadReply;
+using caw::ReadRequest;
+using caw::RegisteruserReply;
+using caw::RegisteruserRequest;
 
 // struct for caw function reply message
 struct CawFuncReply {
@@ -36,27 +36,30 @@ struct CawFuncReply {
 };
 
 class CawFunction {
-  typedef CawFuncReply (CawFunction::*caw_method_t)(const Any& payload);
-  typedef std::unordered_map<std::string, caw_method_t> caw_func_map_t;
-
  public:
-  explicit CawFunction(KeyValueClient& kv)
-      : kv_(kv),
-        function_map_{{"registeruser", &CawFunction::RegisterUser}}
+  // registers user to new account
+  static CawFuncReply RegisterUser(const Any& payload, KeyValueInterface& kv);
 
-  {}
+  // creates new caw
+  static CawFuncReply Caw(const Any& payload, KeyValueInterface& kv);
 
-  // name of function to function pointer map
-  caw_method_t GetFunction(const std::string);
+  // follows another user
+  static CawFuncReply Follow(const Any& payload, KeyValueInterface& kv);
 
-  // register user to kv storage
-  CawFuncReply RegisterUser(const Any& payload);
+  // reads caw
+  static CawFuncReply Read(const Any& payload, KeyValueInterface& kv);
+
+  // shows following and followers for user
+  static CawFuncReply Profile(const Any& payload, KeyValueInterface& kv);
+
+  // map names of functions to functions
+  static std::unordered_map<
+      std::string, std::function<CawFuncReply(const Any&, KeyValueInterface&)> >
+      function_map_;
 
  private:
-  // client to communicate with key value server
-  KeyValueClient& kv_;
-  // map names of functions to functions
-  caw_func_map_t function_map_;
+  // check if user exists
+  static bool UserExists(const std::string& username, KeyValueInterface& kv);
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_
