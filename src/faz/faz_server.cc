@@ -9,6 +9,13 @@
 #include <vector>
 
 namespace csci499 {
+enum EventType {
+  kRegisteruser,
+  kCaw,
+  kFollow,
+  kRead,
+  kProfile,
+};
 
 Status FazServer::hook(ServerContext* context, const HookRequest* request,
                        HookReply* reply) {
@@ -40,24 +47,37 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
     event_function = get_event[0];
   }
 
-  auto caw_method = caw_.GetFunction(event_function);
+  auto caw_method = CawFunction::function_map_[event_function];
   if (caw_method == nullptr) {
     LOG(WARNING) << "not found in CawFunction class for function "
                  << event_function;
     return Status(StatusCode::NOT_FOUND, "function call not found");
   }
-  CawFuncReply func_reply = (caw_.*(caw_method))(request->payload());
+  CawFuncReply func_reply = caw_method(request->payload(), kv_);
 
   Any* any = new Any();
-  switch (event_type) {
-    case 1:  // registeruser
-      break;
-    case 2:  // caw
-      CawReply caw_reply;
-      caw_reply.ParseFromString(func_reply.message);
-      any->PackFrom(caw_reply);
-      break;
+  if (event_type == EventType::kRegisteruser) {
+    RegisteruserReply reply;
+    reply.ParseFromString(func_reply.message);
+    any->PackFrom(reply);
+  } else if (event_type == EventType::kCaw) {
+    CawReply reply;
+    reply.ParseFromString(func_reply.message);
+    any->PackFrom(reply);
+  } else if (event_type == EventType::kFollow) {
+    FollowReply reply;
+    reply.ParseFromString(func_reply.message);
+    any->PackFrom(reply);
+  } else if (event_type == EventType::kRead) {
+    ReadReply reply;
+    reply.ParseFromString(func_reply.message);
+    any->PackFrom(reply);
+  } else if (event_type == EventType::kProfile) {
+    ProfileReply reply;
+    reply.ParseFromString(func_reply.message);
+    any->PackFrom(reply);
   }
+
   reply->set_allocated_payload(any);
   return func_reply.status;
 }
