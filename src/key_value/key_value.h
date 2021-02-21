@@ -20,14 +20,11 @@ class KeyValue : public KeyValueInterface {
 
   virtual ~KeyValue() {}
 
-  // store item
-  virtual void Put(const std::string& key, const std::string& value);
+  void Put(const std::string& key, const std::string& value) override;
 
-  // return stored items
-  virtual std::vector<std::string> Get(const std::string& key);
+  std::vector<std::string> Get(const std::string& key) override;
 
-  // remove key and associated values
-  virtual void Remove(const std::string& key);
+  void Remove(const std::string& key) override;
 
  private:
   // stores key value pairs in map of vectors

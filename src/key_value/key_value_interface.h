@@ -10,7 +10,7 @@
 
 namespace csci499 {
 
-// key value storage for csci499 application
+// KeyValue interface for Dependency Injection with KV and KV Client
 class KeyValueInterface {
  public:
   virtual ~KeyValueInterface() {}

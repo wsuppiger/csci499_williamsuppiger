@@ -9,6 +9,7 @@
 #include <vector>
 
 namespace csci499 {
+// event type codes for Faz Server and UI to be consistent
 enum EventType {
   kRegisteruser,
   kCaw,

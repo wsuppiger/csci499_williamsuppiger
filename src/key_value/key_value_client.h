@@ -26,14 +26,11 @@ class KeyValueClient : public KeyValueInterface {
 
   virtual ~KeyValueClient() {}
 
-  // package and send rpc call put to server
-  virtual void Put(const std::string& key, const std::string& value);
+  void Put(const std::string& key, const std::string& value) override;
 
-  // package and retrieve rpc call get from server
-  virtual std::vector<std::string> Get(const std::string& key);
+  std::vector<std::string> Get(const std::string& key) override;
 
-  // rpc remove key and all values on server
-  virtual void Remove(const std::string& key);
+  void Remove(const std::string& key) override;
 
  private:
   // key value storage object
