@@ -54,14 +54,61 @@ add_custom_command(
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
         "${kv_proto}"
       DEPENDS "${kv_proto}")
+
+# faz proto setup
+get_filename_component(faz_proto "protos/faz.proto" ABSOLUTE)
+get_filename_component(faz_proto_path "${faz_proto}" PATH)
+# generated files
+set(faz_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/faz.pb.cc")
+set(faz_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/faz.pb.h")
+set(faz_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/faz.grpc.pb.cc")
+set(faz_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/faz.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${faz_proto_srcs}" "${faz_proto_hdrs}" "${faz_grpc_srcs}" "${faz_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+        -I "${faz_proto_path}"
+        -I "${CMAKE_CURRENT_BINARY_DIR}/_deps/grpc-src/third_party/protobuf/src"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${faz_proto}"
+      DEPENDS "${faz_proto}")
+
+# caw proto setup
+get_filename_component(caw_proto "protos/caw.proto" ABSOLUTE)
+get_filename_component(caw_proto_path "${caw_proto}" PATH)
+# generated files
+set(caw_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/caw.pb.cc")
+set(caw_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/caw.pb.h")
+set(caw_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/caw.grpc.pb.cc")
+set(caw_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/caw.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${caw_proto_srcs}" "${caw_proto_hdrs}" "${caw_grpc_srcs}" "${caw_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+        -I "${caw_proto_path}"
+        -I "${CMAKE_CURRENT_BINARY_DIR}/_deps/grpc-src/third_party/protobuf/src"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${caw_proto}"
+      DEPENDS "${caw_proto}")
+
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 # setup directories
 set (KV_DIR "src/key_value")
+set (FAZ_DIR "src/faz")
+set (CAW_DIR "src/caw")
 
 add_executable(key_value_test ${KV_DIR}/key_value_test.cc ${KV_DIR}/key_value.cc)
 target_link_libraries(key_value_test gtest_main glog::glog)
 
 add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs})
 target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
+
+add_executable(faz_server ${FAZ_DIR}/faz_run.cc ${FAZ_DIR}/faz_server.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_client.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
+target_link_libraries(faz_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
+
+add_executable(caw_function_test ${CAW_DIR}/caw_function_test.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value_client.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
+target_link_libraries(caw_function_test gtest_main glog::glog ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF})

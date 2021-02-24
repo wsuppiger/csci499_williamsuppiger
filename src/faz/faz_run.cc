@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "key_value_server.h"
+#include "faz_server.h"
 
 namespace csci499 {
 
@@ -15,9 +15,9 @@ using grpc::ServerContext;
 using grpc::ServerReaderWriter;
 using grpc::Status;
 
-void RunKVServer() {
-  std::string server_address("0.0.0.0:50001");
-  KeyValueServer service;
+void RunFazServer() {
+  std::string server_address("0.0.0.0:50000");
+  FazServer service;
 
   // listen on port 50001 with insecure credititals
   ServerBuilder builder;
@@ -36,6 +36,7 @@ void RunKVServer() {
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
 
-  csci499::RunKVServer();
+  csci499::RunFazServer();
   return 0;
 }
+
