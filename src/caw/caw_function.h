@@ -8,6 +8,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "../key_value/key_value_interface.h"
 #include "caw.grpc.pb.h"
@@ -18,6 +19,7 @@ using google::protobuf::Any;
 using grpc::Status;
 using grpc::StatusCode;
 
+using caw::Caw;
 using caw::CawReply;
 using caw::CawRequest;
 using caw::FollowReply;
@@ -28,6 +30,7 @@ using caw::ReadReply;
 using caw::ReadRequest;
 using caw::RegisteruserReply;
 using caw::RegisteruserRequest;
+using caw::Timestamp;
 
 // struct for caw function reply message
 struct CawFuncReply {
@@ -41,7 +44,7 @@ class CawFunction {
   static CawFuncReply RegisterUser(const Any& payload, KeyValueInterface& kv);
 
   // creates new caw
-  static CawFuncReply Caw(const Any& payload, KeyValueInterface& kv);
+  static CawFuncReply CawCreate(const Any& payload, KeyValueInterface& kv);
 
   // follows another user
   static CawFuncReply Follow(const Any& payload, KeyValueInterface& kv);
@@ -60,6 +63,9 @@ class CawFunction {
  private:
   // check if user exists
   static bool UserExists(const std::string& username, KeyValueInterface& kv);
+  // DFS recursively search for all child Caws and add to caws vector
+  static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
+                         std::vector<Caw>& caws);
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_
