@@ -44,7 +44,7 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
     LOG(WARNING) << "event is unhooked for event type " << event_type;
     return Status(StatusCode::NOT_FOUND, "event in not hooked");
   } else {
-    event_function = get_event[get_event.size() - 1];
+    event_function = get_event.back();
   }
 
   auto caw_method = CawFunction::function_map_[event_function];
