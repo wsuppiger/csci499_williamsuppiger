@@ -33,8 +33,7 @@ class FazServer final : public FazService::Service {
  public:
   FazServer()
       : kv_(grpc::CreateChannel("0.0.0.0:50001",
-                                grpc::InsecureChannelCredentials())),
-        caw_(CawFunction(kv_)) {}
+                                grpc::InsecureChannelCredentials())) {}
 
   // hook function found in the caw functions class
   Status hook(ServerContext* context, const HookRequest* request,
@@ -51,8 +50,6 @@ class FazServer final : public FazService::Service {
  private:
   // key value client used to connect to kv server
   KeyValueClient kv_;
-  // object of functions used to run FaaS for Caw
-  CawFunction caw_;
 };
 }  // namespace csci499
 #endif  // SRC_FAZ_FAZ_SERVER_H_

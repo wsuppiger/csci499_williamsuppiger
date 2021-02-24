@@ -109,3 +109,6 @@ target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} 
 
 add_executable(faz_server ${FAZ_DIR}/faz_run.cc ${FAZ_DIR}/faz_server.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_client.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
 target_link_libraries(faz_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
+
+add_executable(caw_function_test ${CAW_DIR}/caw_function_test.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value_client.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
+target_link_libraries(caw_function_test gtest_main glog::glog ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF})

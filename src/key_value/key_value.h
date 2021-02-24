@@ -9,24 +9,22 @@
 #include <unordered_map>
 #include <vector>
 
+#include "key_value_interface.h"
+
 namespace csci499 {
 
 // key value storage for csci499 application
-class KeyValue {
+class KeyValue : public KeyValueInterface {
  public:
   KeyValue() : storage_(), lock_() {}
 
   virtual ~KeyValue() {}
 
-  // stores key value pair
-  void Put(const std::string& key, const std::string& value);
+  void Put(const std::string& key, const std::string& value) override;
 
-  // returns a vector of all values for a given key
-  std::vector<std::string> Get(const std::string& key);
+  std::vector<std::string> Get(const std::string& key) override;
 
-  // removes all values for a given key
-  void Remove(const std::string& key);
-
+  void Remove(const std::string& key) override;
 
  private:
   // stores key value pairs in map of vectors
