@@ -8,22 +8,15 @@
 #include <string>
 #include <vector>
 
-namespace csci499 {
-// event type codes for Faz Server and UI to be consistent
-enum EventType {
-  kRegisteruser,
-  kCaw,
-  kFollow,
-  kRead,
-  kProfile,
-};
+#include "../caw/event_type.h"
 
+namespace csci499 {
 Status FazServer::hook(ServerContext* context, const HookRequest* request,
                        HookReply* reply) {
   const std::string event_type = std::to_string(request->event_type());
   const std::string event_function = request->event_function();
   kv_.Put(event_type, event_function);
-  LOG(INFO) << "hooked type " << event_type << "with function "
+  LOG(INFO) << "hooked type " << event_type << " with function "
             << event_function;
   return Status::OK;
 }
@@ -56,30 +49,30 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
   }
   CawFuncReply func_reply = caw_method(request->payload(), kv_);
 
-  Any* any = new Any();
+  Any any = Any();
   if (event_type == EventType::kRegisteruser) {
     RegisteruserReply reply;
     reply.ParseFromString(func_reply.message);
-    any->PackFrom(reply);
+    any.PackFrom(reply);
   } else if (event_type == EventType::kCaw) {
     CawReply reply;
     reply.ParseFromString(func_reply.message);
-    any->PackFrom(reply);
+    any.PackFrom(reply);
   } else if (event_type == EventType::kFollow) {
     FollowReply reply;
     reply.ParseFromString(func_reply.message);
-    any->PackFrom(reply);
+    any.PackFrom(reply);
   } else if (event_type == EventType::kRead) {
     ReadReply reply;
     reply.ParseFromString(func_reply.message);
-    any->PackFrom(reply);
+    any.PackFrom(reply);
   } else if (event_type == EventType::kProfile) {
     ProfileReply reply;
     reply.ParseFromString(func_reply.message);
-    any->PackFrom(reply);
+    any.PackFrom(reply);
   }
 
-  reply->set_allocated_payload(any);
+  *reply->mutable_payload() = any;
   return func_reply.status;
 }
 }  // namespace csci499
