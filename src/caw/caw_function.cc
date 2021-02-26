@@ -74,7 +74,10 @@ CawFuncReply CawFunction::CawCreate(const Any& payload, KeyValueInterface& kv) {
   caw.mutable_timestamp()->CopyFrom(time);
   // store serialized caw in key caw-<caw-id>
   kv.Put("caw-" + caw_id, caw.SerializeAsString());
-  return {Status::OK, caw.SerializeAsString()};
+
+  CawReply reply;
+  reply.mutable_caw()->CopyFrom(caw);
+  return {Status::OK, reply.SerializeAsString()};
 }
 
 CawFuncReply CawFunction::Follow(const Any& payload, KeyValueInterface& kv) {
