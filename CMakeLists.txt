@@ -32,6 +32,14 @@ FetchContent_Declare(
   )
 FetchContent_MakeAvailable(glog)
 
+# aadd gflags library
+FetchContent_Declare(
+  gflags
+  GIT_REPOSITORY https://github.com/gflags/gflags
+  GIT_TAG        v2.2.2
+  )
+FetchContent_MakeAvailable(gflags)
+
 # protobuf setup
 set(protobuf_MODULE_COMPATIBLE TRUE)
 message(STATUS "Using protobuf")
@@ -107,8 +115,11 @@ target_link_libraries(key_value_test gtest_main glog::glog)
 add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs})
 target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
 
-add_executable(faz_server ${FAZ_DIR}/faz_run.cc ${FAZ_DIR}/faz_server.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_client.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
-target_link_libraries(faz_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
+add_executable(faz_server ${FAZ_DIR}/faz_run.cc ${FAZ_DIR}/faz_server.cc ${FAZ_DIR}/faz_client.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_client.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
+target_link_libraries(faz_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog gflags)
 
 add_executable(caw_function_test ${CAW_DIR}/caw_function_test.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value_client.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
 target_link_libraries(caw_function_test gtest_main glog::glog ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF})
+
+add_executable(caw ${CAW_DIR}/caw.cc ${FAZ_DIR}/faz_client.cc ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
+target_link_libraries(caw gflags glog::glog ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF})
