@@ -32,15 +32,15 @@ To run the Caw test cases:
 `./caw_function_test`
 
 ### Run Components
-To run the Key Value storage application: 
+**To run the Key Value storage application: **
 
 `./key_value_server`
 
-To run the Faz (FaaS) application:
+**To run the Faz (FaaS) application:**
 
 `./faz_server`
 
-To run the Caw application:
+**To run the Caw application:**
 
 *Hooks all functions in Caw:* 
 
