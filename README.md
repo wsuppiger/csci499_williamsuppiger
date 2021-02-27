@@ -42,11 +42,11 @@ To run the Caw test cases:
 
 **To run the Caw application:**
 
-*Hooks all functions in Caw:* 
+Hooks all functions in Caw:
 
 `./caw --hookall`
 
-*Unhooks all functions in Caw:* 
+Unhooks all functions in Caw:
 
 `./caw --unhookall`
 
@@ -54,26 +54,26 @@ To run the Caw test cases:
 
 `./caw --registeruser <username>`
 
-*Creates a new caw with the given text:* 
+Creates a new caw with the given text:
 
 `./caw --user <username> --caw <caw text>`
 
-*Indicates that the new caw is a reply to the given id:* 
+Indicates that the new caw is a reply to the given id:
 
 `./caw --user <username> --caw <caw text> --reply <reply caw id>`
 
-*Starts following the given username:* 
+Starts following the given username:
 
 `./caw --user <username> --follow <username>`
 
-*Reads the caw thread starting at the given id:* 
+Reads the caw thread starting at the given id:
 
 `./caw --user <username> --read <caw id>`
 
-*Gets the user’s profile of following and followers:* 
+Gets the user’s profile of following and followers:
 
 `./caw --user <username> --profile`
 
-*Lists available flags:* 
+Lists available flags:
 
 `./caw --help`
