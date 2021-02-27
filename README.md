@@ -32,7 +32,7 @@ To run the Caw test cases:
 `./caw_function_test`
 
 ### Run Components
-**To run the Key Value storage application: **
+**To run the Key Value storage application:**
 
 `./key_value_server`
 
