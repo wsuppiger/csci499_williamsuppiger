@@ -61,8 +61,9 @@ std::string CreateCaw(KeyValue& kv, const std::string& username,
   Any any = Any();
   any.PackFrom(request);
   CawFuncReply reply = caw_method(any, kv);
-  Caw caw;
-  caw.ParseFromString(reply.message);
+  CawReply caw_reply;
+  caw_reply.ParseFromString(reply.message);
+  Caw caw = caw_reply.caw();
   return caw.id();
 }
 
@@ -243,8 +244,9 @@ TEST(CawCreate, NoParent) {
   any.PackFrom(request);
   CawFuncReply reply = caw_method(any, kv);
   ASSERT_TRUE(reply.status.ok());
-  Caw caw;
-  caw.ParseFromString(reply.message);
+  CawReply caw_reply;
+  caw_reply.ParseFromString(reply.message);
+  Caw caw = caw_reply.caw();
   // verify all parts of Caw
   ASSERT_EQ(caw.username(), "user1");
   ASSERT_EQ(caw.text(), "sample text");
@@ -274,8 +276,9 @@ TEST(CawCreate, Parent) {
   any.PackFrom(request);
   CawFuncReply reply = caw_method(any, kv);
   ASSERT_TRUE(reply.status.ok());
-  Caw caw;
-  caw.ParseFromString(reply.message);
+  CawReply caw_reply;
+  caw_reply.ParseFromString(reply.message);
+  Caw caw = caw_reply.caw();
   // verify all parts of Caw
   ASSERT_EQ(caw.username(), "user1");
   ASSERT_EQ(caw.text(), "sample text");

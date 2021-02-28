@@ -46,7 +46,7 @@ bool FazClient::Unhook(int event_type) {
 Status FazClient::Event(int event_type, Any& payload, EventReply& reply) {
   EventRequest request;
   request.set_event_type(event_type);
-  request.set_allocated_payload(&payload);
+  *request.mutable_payload() = payload;
 
   ClientContext context;
   Status status = stub_->event(&context, request, &reply);
