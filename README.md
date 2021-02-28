@@ -50,7 +50,7 @@ Unhooks all functions in Caw:
 
 `./caw --unhookall`
 
-*Registers the given username:* 
+Registers the given username:
 
 `./caw --registeruser <username>`
 
