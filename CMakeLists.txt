@@ -101,6 +101,25 @@ add_custom_command(
         "${caw_proto}"
       DEPENDS "${caw_proto}")
 
+# kv persist proto setup
+get_filename_component(kv_persist_proto "protos/kv_persist.proto" ABSOLUTE)
+get_filename_component(kv_persist_proto_path "${kv_persist_proto}" PATH)
+# generated files
+set(kv_persist_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/kv_persist.pb.cc")
+set(kv_persist_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/kv_persist.pb.h")
+set(kv_persist_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/kv_persist.grpc.pb.cc")
+set(kv_persist_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/kv_persist.grpc.pb.h")
+add_custom_command(
+      OUTPUT "${kv_persist_proto_srcs}" "${kv_persist_proto_hdrs}" "${kv_persist_grpc_srcs}" "${kv_persist_grpc_hdrs}"
+      COMMAND ${_PROTOBUF_PROTOC}
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
+        -I "${kv_persist_proto_path}"
+        -I "${CMAKE_CURRENT_BINARY_DIR}/_deps/grpc-src/third_party/protobuf/src"
+        --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
+        "${kv_persist_proto}"
+      DEPENDS "${kv_persist_proto}")
+
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -109,11 +128,11 @@ set (KV_DIR "src/key_value")
 set (FAZ_DIR "src/faz")
 set (CAW_DIR "src/caw")
 
-add_executable(key_value_test ${KV_DIR}/key_value_test.cc ${KV_DIR}/key_value.cc)
+add_executable(key_value_test ${KV_DIR}/key_value_test.cc ${KV_DIR}/key_value.cc ${kv_persist_proto_srcs})
 target_link_libraries(key_value_test gtest_main glog::glog)
 
-add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs})
-target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog)
+add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${kv_persist_proto_srcs})
+target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog gflags )
 
 add_executable(faz_server ${FAZ_DIR}/faz_run.cc ${FAZ_DIR}/faz_server.cc ${FAZ_DIR}/faz_client.cc ${CAW_DIR}/caw_function.cc ${KV_DIR}/key_value_client.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${faz_proto_srcs} ${faz_grpc_srcs} ${caw_proto_srcs} ${caw_grpc_srcs})
 target_link_libraries(faz_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog gflags)
