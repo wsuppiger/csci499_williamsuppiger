@@ -41,4 +41,31 @@ void KeyValue::Remove(const std::string& key) {
   LOG(INFO) << "removed any existing values for key " << key;
 }
 
+void KeyValue::TakeSnapshot(KeyValueSnapshot& snapshot) {
+  lock_.lock();
+  for (auto kv : storage_) {  // loop over eaach key value(s) pair
+    KeyValuePair pair;
+    pair.set_key(kv.first);
+    std::vector<std::string> values = kv.second;
+    *pair.mutable_values() = {values.begin(), values.end()};
+    KeyValuePair* p = snapshot.add_pairs();
+    p->CopyFrom(pair);
+  }
+  LOG(INFO) << "Took Snapshot of current kv state";
+  lock_.unlock();
+}
+
+void KeyValue::LoadSnapshot(KeyValueSnapshot& snapshot) {
+  lock_.lock();
+  storage_.clear();
+  for (auto pair : snapshot.pairs()) {
+    std::string key = pair.key();
+    std::vector<std::string> values(pair.values().begin(), pair.values().end());
+    storage_.insert({key, values});
+    LOG(INFO) << "Loaded Snapshot key: " << key;
+  }
+  LOG(INFO) << "Completed loading Snapshot";
+  lock_.unlock();
+}
+
 }  // namespace csci499
