@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package kvstore;
+
+// kv pair for serializable persistant storage
+message KeyValuePair {
+  bytes key = 1;
+  repeated bytes values = 2;
+}
+
+// kv message which stores a snapshot of the database since only one
+// protobuf object can be stored in a file
+message KeyValueSnapshot {
+  repeated KeyValuePair pairs = 1;
+}
