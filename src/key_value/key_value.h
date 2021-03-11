@@ -10,8 +10,11 @@
 #include <vector>
 
 #include "key_value_interface.h"
+#include "kv_persist.grpc.pb.h"
 
 namespace csci499 {
+using kvstore::KeyValuePair;
+using kvstore::KeyValueSnapshot;
 
 // key value storage for csci499 application
 class KeyValue : public KeyValueInterface {
@@ -25,6 +28,12 @@ class KeyValue : public KeyValueInterface {
   std::vector<std::string> Get(const std::string& key) override;
 
   void Remove(const std::string& key) override;
+
+  // stores snapshot of current kv state in snapshot parameter
+  void TakeSnapshot(KeyValueSnapshot& snapshot);
+
+  // loads current snapshot of kv state from provided snapshot
+  void LoadSnapshot(KeyValueSnapshot& snapshot);
 
  private:
   // stores key value pairs in map of vectors
