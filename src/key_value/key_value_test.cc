@@ -9,6 +9,7 @@
 namespace {
 
 using csci499::KeyValue;
+using kvstore::KeyValueSnapshot;
 
 // insert of one value for one key
 TEST(KeyValue, OneVectOneValue) {
@@ -73,4 +74,40 @@ TEST(KeyValue, Empty) {
   EXPECT_EQ(test.Get("a"), empty);
 }
 
+// Snapshot with one key and one value
+TEST(KeyValue, SnapshotOneKeyOneValue) {
+  KeyValue test;
+  test.Put("a", "1");
+  KeyValueSnapshot snapshot;
+  test.CreateSnapshot(snapshot);
+  KeyValue replica;
+  replica.LoadSnapshot(snapshot);
+  EXPECT_EQ(replica.Get("a")[0], "1");
+}
+
+// Snapshot with one key and two values
+TEST(KeyValue, SnapshotOneKeyTwoValues) {
+  KeyValue test;
+  test.Put("a", "1");
+  test.Put("a", "2");
+  KeyValueSnapshot snapshot;
+  test.CreateSnapshot(snapshot);
+  KeyValue replica;
+  replica.LoadSnapshot(snapshot);
+  EXPECT_EQ(replica.Get("a")[0], "1");
+  EXPECT_EQ(replica.Get("a")[1], "2");
+}
+
+// Snapshot with two keys and one value
+TEST(KeyValue, SnapshotTwoKeysOneValue) {
+  KeyValue test;
+  test.Put("a", "1");
+  test.Put("b", "2");
+  KeyValueSnapshot snapshot;
+  test.CreateSnapshot(snapshot);
+  KeyValue replica;
+  replica.LoadSnapshot(snapshot);
+  EXPECT_EQ(replica.Get("a")[0], "1");
+  EXPECT_EQ(replica.Get("b")[0], "2");
+}
 }  // namespace

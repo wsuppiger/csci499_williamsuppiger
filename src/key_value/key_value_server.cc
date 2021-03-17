@@ -39,7 +39,7 @@ Status KeyValueServer::get(ServerContext* context,
                            ServerReaderWriter<GetReply, GetRequest>* stream) {
   GetRequest request;
   stream->Read(&request);  // retrieve only the first request from the stream
-  std::string key = request.key();
+  const std::string key = request.key();
   std::vector<std::string> values(storage_.Get(key));
   for (auto v : values) {
     GetReply reply;
@@ -62,7 +62,7 @@ Status KeyValueServer::remove(ServerContext* context,
 bool KeyValueServer::StoreSnapshot(const std::string filename) {
   if (!filename.empty()) {
     KeyValueSnapshot snapshot;
-    storage_.TakeSnapshot(snapshot);  // get snapshot of DB from kv storage
+    storage_.CreateSnapshot(snapshot);  // get snapshot of DB from kv storage
     std::ofstream output;
     output.open(filename);
     if (output.is_open() && snapshot.SerializeToOstream(&output)) {
