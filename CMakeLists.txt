@@ -129,7 +129,7 @@ set (FAZ_DIR "src/faz")
 set (CAW_DIR "src/caw")
 
 add_executable(key_value_test ${KV_DIR}/key_value_test.cc ${KV_DIR}/key_value.cc ${kv_persist_proto_srcs})
-target_link_libraries(key_value_test gtest_main glog::glog)
+target_link_libraries(key_value_test ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} gtest_main glog::glog)
 
 add_executable(key_value_server ${KV_DIR}/key_value_run.cc ${KV_DIR}/key_value_server.cc ${KV_DIR}/key_value.cc ${kv_proto_srcs} ${kv_grpc_srcs} ${kv_persist_proto_srcs})
 target_link_libraries(key_value_server ${_GRPC_GRPCPP} ${_PROTOBUF_LIBPROTOBUF} glog::glog gflags )

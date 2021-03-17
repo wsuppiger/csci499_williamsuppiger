@@ -8,7 +8,7 @@
 namespace csci499 {
 
 void KeyValue::Put(const std::string& key, const std::string& value) {
-  lock_.lock();
+  std::lock_guard<std::mutex> lock(lock_);
   auto storage_iter = storage_.find(key);
   if (storage_iter != storage_.end()) {
     storage_iter->second.push_back(value);
@@ -18,32 +18,28 @@ void KeyValue::Put(const std::string& key, const std::string& value) {
     storage_[key] = value_list;
     LOG(INFO) << "stored new key value pair";
   }
-  lock_.unlock();
 }
 
 std::vector<std::string> KeyValue::Get(const std::string& key) {
-  lock_.lock();
+  std::lock_guard<std::mutex> lock(lock_);
   auto storage_iter = storage_.find(key);
   if (storage_iter != storage_.end()) {
-    lock_.unlock();
     LOG(INFO) << "found value(s) for key " << key;
     return storage_iter->second;
   }
-  lock_.unlock();
   LOG(WARNING) << "could not find values for key  " << key;
   return {};
 }
 
 void KeyValue::Remove(const std::string& key) {
-  lock_.lock();
+  std::lock_guard<std::mutex> lock(lock_);
   storage_.erase(key);
-  lock_.unlock();
   LOG(INFO) << "removed any existing values for key " << key;
 }
 
-void KeyValue::TakeSnapshot(KeyValueSnapshot& snapshot) {
-  lock_.lock();
-  for (auto kv : storage_) {  // loop over eaach key value(s) pair
+void KeyValue::CreateSnapshot(KeyValueSnapshot& snapshot) {
+  std::lock_guard<std::mutex> lock(lock_);
+  for (const auto& kv : storage_) {  // loop over eaach key value(s) pair
     KeyValuePair pair;
     pair.set_key(kv.first);
     std::vector<std::string> values = kv.second;
@@ -52,20 +48,18 @@ void KeyValue::TakeSnapshot(KeyValueSnapshot& snapshot) {
     p->CopyFrom(pair);
   }
   LOG(INFO) << "Took Snapshot of current kv state";
-  lock_.unlock();
 }
 
-void KeyValue::LoadSnapshot(KeyValueSnapshot& snapshot) {
-  lock_.lock();
+void KeyValue::LoadSnapshot(const KeyValueSnapshot& snapshot) {
+  std::lock_guard<std::mutex> lock(lock_);
   storage_.clear();
-  for (auto pair : snapshot.pairs()) {
-    std::string key = pair.key();
+  for (const auto& pair : snapshot.pairs()) {
+    const std::string key = pair.key();
     std::vector<std::string> values(pair.values().begin(), pair.values().end());
     storage_.insert({key, values});
     LOG(INFO) << "Loaded Snapshot key: " << key;
   }
   LOG(INFO) << "Completed loading Snapshot";
-  lock_.unlock();
 }
 
 }  // namespace csci499

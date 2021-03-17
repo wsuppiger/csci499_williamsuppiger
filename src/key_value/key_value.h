@@ -30,10 +30,10 @@ class KeyValue : public KeyValueInterface {
   void Remove(const std::string& key) override;
 
   // stores snapshot of current kv state in snapshot parameter
-  void TakeSnapshot(KeyValueSnapshot& snapshot);
+  void CreateSnapshot(KeyValueSnapshot& snapshot);
 
   // loads current snapshot of kv state from provided snapshot
-  void LoadSnapshot(KeyValueSnapshot& snapshot);
+  void LoadSnapshot(const KeyValueSnapshot& snapshot);
 
  private:
   // stores key value pairs in map of vectors
