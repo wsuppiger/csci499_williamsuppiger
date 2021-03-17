@@ -23,12 +23,12 @@ using grpc::Status;
 using kvstore::GetReply;
 using kvstore::GetRequest;
 using kvstore::KeyValuePair;
+using kvstore::KeyValueSnapshot;
 using kvstore::KeyValueStore;
 using kvstore::PutReply;
 using kvstore::PutRequest;
 using kvstore::RemoveReply;
 using kvstore::RemoveRequest;
-using kvstore::KeyValueSnapshot;
 
 // key value server implementtaion for csci499
 class KeyValueServer final : public KeyValueStore::Service {
