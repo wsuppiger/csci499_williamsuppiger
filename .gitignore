@@ -42,6 +42,6 @@
 .vscode/
 
 # golang phase 2
-go_caw
+/go_caw
 src/go_caw/caw
 src/go_caw/faz
