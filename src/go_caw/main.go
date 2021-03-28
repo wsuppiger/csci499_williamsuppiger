@@ -118,6 +118,7 @@ func main() {
 
 	if command == kInvalidCommand {
 		fmt.Println("Invalid command.  Use --help for info about the commands.")
+		os.Exit(1)
 	} else if command == kHookAll {
 		for event_type, event_function := range event_map {
 			_, err := client.Hook(context.Background(), &faz.HookRequest{
@@ -204,17 +205,17 @@ func main() {
 				panic(err)
 			}
 			caws := read_reply.Caws
-			// Caws are returned in DFS pattern, so use stack-like structure to format indentation
-			var stack []caw.Caw
+			// Caws are returned in DFS pattern, so use stack-like structure to format parent indentation
+			var parent_stack []caw.Caw
 			for _, caw := range caws {
-				for len(stack) > 0 && string(caw.ParentId) != string(stack[len(stack)-1].Id) {
-					stack = stack[:len(stack)-1] // Pop
+				for len(parent_stack) > 0 && string(caw.ParentId) != string(parent_stack[len(parent_stack)-1].Id) {
+					parent_stack = parent_stack[:len(parent_stack)-1] // Pop
 				}
 				// print out caw in indented pretty format
 				unix_time := time.Unix(caw.Timestamp.Seconds, 0)
 				pretty_time := unix_time.Format(time.RFC3339)
-				fmt.Println("[", pretty_time, "]", strings.Repeat("-", len(stack)*4), "#"+string(caw.Id), caw.Username+":", caw.Text)
-				stack = append(stack, *caw)
+				fmt.Println("[", pretty_time, "]", strings.Repeat("-", len(parent_stack)*4), "#"+string(caw.Id), caw.Username+":", caw.Text)
+				parent_stack = append(parent_stack, *caw)
 			}
 		}
 	} else if command == kProfile {
