@@ -36,6 +36,10 @@ To run the Caw test cases:
 
 `./key_value_server`
 
+Restore its data from a file and store its data to a file:
+
+`./key_value_server --store <file>`
+
 **To run the Faz (FaaS) application:**
 
 `./faz_server`
