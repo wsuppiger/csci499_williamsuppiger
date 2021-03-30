@@ -231,6 +231,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			// print list of followers and following returned by gRPC
 			fmt.Println("followers: ", strings.Join(profile_reply.Followers, ", "))
 			fmt.Println("following: ", strings.Join(profile_reply.Following, ", "))
 		}
