@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+option go_package = "github.com/williamsuppiger/csci499_williamsuppiger/protos/go/faz";
+
 import "google/protobuf/any.proto";
 
 package faz;
