@@ -61,6 +61,9 @@ class FazClient {
 
   // send an event request to faz server and return proto Reply object
   Status Event(int event_type, Any& payload, EventReply& reply);
+
+  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  Status Stream(int event_type, Any& payload, EventReply& reply);
  private:
   // faz storage object
   std::unique_ptr<FazService::Stub> stub_;

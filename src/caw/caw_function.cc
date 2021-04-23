@@ -18,7 +18,8 @@ std::unordered_map<std::string,
                                   {"caw", &CawFunction::CawCreate},
                                   {"follow", &CawFunction::Follow},
                                   {"read", &CawFunction::Read},
-                                  {"profile", &CawFunction::Profile}};
+                                  {"profile", &CawFunction::Profile},
+                                  {"stream", &CawFunction::Stream}};
 
 CawFuncReply CawFunction::RegisterUser(const Any& payload,
                                        KeyValueInterface& kv) {
@@ -147,6 +148,12 @@ CawFuncReply CawFunction::Profile(const Any& payload, KeyValueInterface& kv) {
     reply.add_following(f);
   }
   return {Status::OK, reply.SerializeAsString()};
+}
+
+CawFuncReply CawFunction::Stream(const Any& payload, KeyValueInterface& kv) {
+  // This function interracts with the kvstore
+  // to accomplish streaming functionality
+  return {Status::OK, ""};
 }
 
 bool CawFunction::UserExists(const std::string& username,

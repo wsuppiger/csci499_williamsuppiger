@@ -55,6 +55,9 @@ class CawFunction {
   // shows following and followers for user
   static CawFuncReply Profile(const Any& payload, KeyValueInterface& kv);
 
+  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  static CawFuncReply Stream(const Any& payload, KeyValueInterface& kv);
+
   // map names of functions to functions
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&, KeyValueInterface&)> >

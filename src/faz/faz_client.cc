@@ -53,4 +53,9 @@ Status FazClient::Event(int event_type, Any& payload, EventReply& reply) {
   return status;
 }
 
+Status FazClient::Stream(int event_type, Any& payload, EventReply& reply) {
+  // Pack request and call server
+  return Status::OK;
+}
+
 }  // namespace csci499

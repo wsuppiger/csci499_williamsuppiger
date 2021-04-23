@@ -16,6 +16,7 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::ServerReaderWriter;
+using grpc::ServerWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
@@ -46,6 +47,10 @@ class FazServer final : public FazService::Service {
   // executes event found in caw functions
   Status event(ServerContext* context, const EventRequest* request,
                EventReply* reply) override;
+
+  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  Status stream(ServerContext* context, const EventRequest* request, 
+                ServerWriter<EventReply>* writer) override;
 
  private:
   // key value client used to connect to kv server
