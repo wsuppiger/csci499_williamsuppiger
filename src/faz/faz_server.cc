@@ -78,8 +78,34 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
 
 Status FazServer::stream(ServerContext* context, const EventRequest* request, 
                 ServerWriter<EventReply>* writer) {
+  const int event_type = request->event_type();
+  std::vector<std::string> get_event = kv_.Get(std::to_string(event_type));
+  std::string event_function;
+  if (get_event.empty()) {
+    LOG(WARNING) << "event is unhooked for event type " << event_type;
+    return Status(StatusCode::NOT_FOUND, "event in not hooked");
+  } else {
+    event_function = get_event.back(); // Name of function "stream"
+  }
 
-  // This function calls the corresponding caw.h function
-  return Status::OK;
+  auto caw_method = CawFunction::stream_function_map_[event_function];
+  if (caw_method == nullptr) {
+    LOG(WARNING) << "not found in CawFunction class for function "
+                 << event_function;
+    return Status(StatusCode::NOT_FOUND, "function call not found");
+  }
+
+  // Creating a callback function that will write 
+  // to THIS instance of a serverwriter
+  const std::function<void(const Any&)> 
+  writeToServerWriter = [&writer](const Any& response) {
+    EventReply reply; 
+    *reply.mutable_payload() = response;
+    writer->Write(reply);
+  };
+
+  CawFuncReply func_reply = caw_method(request->payload(), kv_,
+                                        writeToServerWriter);
+  return func_reply.status;
 }
 }  // namespace csci499

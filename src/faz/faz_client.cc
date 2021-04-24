@@ -53,9 +53,23 @@ Status FazClient::Event(int event_type, Any& payload, EventReply& reply) {
   return status;
 }
 
-Status FazClient::Stream(int event_type, Any& payload, EventReply& reply) {
-  // Pack request and call server
-  return Status::OK;
+Status FazClient::Stream(int event_type, Any& payload,
+                          std::function<void(EventReply)>& print_caw) {
+  EventRequest request;
+  request.set_event_type(event_type);
+  *request.mutable_payload() = payload;
+
+  ClientContext context;
+  std::shared_ptr<ClientReader<EventReply> > readStream(
+      stub_->stream(&context, request));
+
+  EventReply reply; 
+
+  while (readStream->Read(&reply)) {
+    print_caw(reply);
+  }
+
+  return readStream->Finish();
 }
 
 }  // namespace csci499

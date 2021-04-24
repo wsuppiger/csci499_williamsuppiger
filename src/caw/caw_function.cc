@@ -18,8 +18,13 @@ std::unordered_map<std::string,
                                   {"caw", &CawFunction::CawCreate},
                                   {"follow", &CawFunction::Follow},
                                   {"read", &CawFunction::Read},
-                                  {"profile", &CawFunction::Profile},
-                                  {"stream", &CawFunction::Stream}};
+                                  {"profile", &CawFunction::Profile}};
+                                  
+std::unordered_map<std::string, std::function<CawFuncReply(const Any&,
+                                              KeyValueInterface&,
+                                              const std::function<void(const Any&)>&)> 
+                                              >
+    CawFunction::stream_function_map_ = {{"stream", &CawFunction::Stream}};
 
 CawFuncReply CawFunction::RegisterUser(const Any& payload,
                                        KeyValueInterface& kv) {
@@ -150,9 +155,12 @@ CawFuncReply CawFunction::Profile(const Any& payload, KeyValueInterface& kv) {
   return {Status::OK, reply.SerializeAsString()};
 }
 
-CawFuncReply CawFunction::Stream(const Any& payload, KeyValueInterface& kv) {
-  // This function interracts with the kvstore
-  // to accomplish streaming functionality
+CawFuncReply CawFunction::Stream(const Any& payload, KeyValueInterface& kv,
+                                  const std::function<void(const Any&)>& 
+                                    writeToServerWriter) {
+  // This function will have a callback that has the server instance
+  // It will store that function in the kvstore and call it whenever 
+  // a matching tag is PUT in the kvstore. 
   return {Status::OK, ""};
 }
 

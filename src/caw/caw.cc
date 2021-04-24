@@ -238,8 +238,7 @@ int main(int argc, char* argv[]) {
       std::cout << std::endl;
     }
   } else if (command == input::kStream) {
-    // Pack Stream Request and pass into Faz client
-    // Take care of displaying output to terminal
+    // Since we will have to print multiple
   }
   return 0;
 }
