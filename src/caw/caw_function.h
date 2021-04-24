@@ -81,6 +81,8 @@ class CawFunction {
   // DFS recursively search for all child Caws and add to caws vector
   static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
                          std::vector<Caw>& caws);
+  // Returns a vector containing all hashtags in some text.
+  std::vector<std::string> GetHashtags(const std::string& key);
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_

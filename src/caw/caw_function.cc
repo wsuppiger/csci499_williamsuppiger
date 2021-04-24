@@ -159,9 +159,9 @@ CawFuncReply CawFunction::Stream(const Any& payload,
                                   const std::unordered_map<std::string, 
                                     std::vector<std::function<void(const Any&)>> >&
                                   current_streamers_) {
-  // This function will have a callback that has the server instance
-  // It will store that function in the kvstore and call it whenever 
-  // a matching tag is PUT in the kvstore. 
+  // This function will parse the payload and look for any hashtags 
+  // It will then call the functions for that corresponding hashtag 
+  // Without ever interracting with the kvstore
   return {Status::OK, ""};
 }
 
@@ -180,6 +180,11 @@ void CawFunction::ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
   for (const auto& c : children) {
     ReadReplys(c, kv, caws);
   }
+}
+
+std::vector<std::string> GetHashtags(const std::string& key) {
+  // I will pass a caw text and find tags here
+  return {};
 }
 
 }  // namespace csci499

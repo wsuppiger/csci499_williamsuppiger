@@ -72,9 +72,4 @@ void KeyValueClient::Remove(const std::string& key) {
   }
 }
 
-std::vector<std::string> GetHashtags(const std::string& key) {
-  // I will pass a caw text and find tags here
-  return {};
-}
-
 }  // namespace csci499
