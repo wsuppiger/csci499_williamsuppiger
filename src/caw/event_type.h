@@ -10,6 +10,7 @@ enum EventType {
   kFollow,
   kRead,
   kProfile,
+  kStream,
 };
 
 #endif  // SRC_CAW_EVENT_TYPE_H_

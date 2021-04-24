@@ -75,4 +75,11 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
   *reply->mutable_payload() = any;
   return func_reply.status;
 }
+
+Status FazServer::stream(ServerContext* context, const EventRequest* request, 
+                ServerWriter<EventReply>* writer) {
+
+  // This function calls the corresponding caw.h function
+  return Status::OK;
+}
 }  // namespace csci499
