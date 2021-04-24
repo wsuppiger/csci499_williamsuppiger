@@ -56,9 +56,10 @@ class CawFunction {
   static CawFuncReply Profile(const Any& payload, KeyValueInterface& kv);
 
   // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
-  static CawFuncReply Stream(const Any& payload, KeyValueInterface& kv,
-                             const std::function<void(const Any&)>& 
-                              writeToServerWriter);
+  static CawFuncReply Stream(const Any& payload,
+                             const std::unordered_map<std::string, 
+                              std::vector<std::function<void(const Any&)>> >&
+                                current_streamers_);
 
   // map names of functions to functions
   static std::unordered_map<
@@ -69,9 +70,10 @@ class CawFunction {
   // Seperate because stream_function declaration is different
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&,
-                                              KeyValueInterface&,
-                                              const std::function<void(const Any&)>&)> >
-      stream_function_map_;
+                                              const std::unordered_map<std::string, 
+                                                std::vector<std::function<
+                                                  void(const Any&)>> >&)
+                                > > stream_function_map_;
 
  private:
   // check if user exists

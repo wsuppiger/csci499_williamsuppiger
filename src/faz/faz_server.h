@@ -29,6 +29,7 @@ using faz::HookReply;
 using faz::HookRequest;
 using faz::UnhookReply;
 using faz::UnhookRequest;
+using caw::StreamRequest;
 
 class FazServer final : public FazService::Service {
  public:
@@ -55,6 +56,9 @@ class FazServer final : public FazService::Service {
  private:
   // key value client used to connect to kv server
   KeyValueClient kv_;
+
+  std::unordered_map<std::string, std::vector<std::function<void(const Any&)>> >
+    current_streamers_;
 };
 }  // namespace csci499
 #endif  // SRC_FAZ_FAZ_SERVER_H_
