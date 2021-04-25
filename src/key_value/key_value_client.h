@@ -33,8 +33,6 @@ class KeyValueClient : public KeyValueInterface {
   void Remove(const std::string& key) override;
 
  private:
-  // Returns a vector containing all hashtags in some text.
-  std::vector<std::string> GetHashtags(const std::string& key);
 
   // key value storage object
   std::unique_ptr<KeyValueStore::Stub> stub_;

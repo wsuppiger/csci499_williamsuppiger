@@ -56,12 +56,25 @@ class CawFunction {
   static CawFuncReply Profile(const Any& payload, KeyValueInterface& kv);
 
   // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
-  static CawFuncReply Stream(const Any& payload, KeyValueInterface& kv);
+  static CawFuncReply Stream(const Any& payload,
+                              std::unordered_map<std::string, 
+                              std::vector<std::function<void(const Any&)>> >&
+                                current_streamers_);
 
   // map names of functions to functions
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&, KeyValueInterface&)> >
       function_map_;
+
+  // map names of stream_functions to functions
+  // Seperate because stream_function declaration is different
+  // TODO: Consider using a typedef
+  static std::unordered_map<
+      std::string, std::function<CawFuncReply(const Any&,
+                                              std::unordered_map<std::string, 
+                                                std::vector<std::function<
+                                                  void(const Any&)>> >&)
+                                > > stream_function_map_;
 
  private:
   // check if user exists
@@ -69,6 +82,8 @@ class CawFunction {
   // DFS recursively search for all child Caws and add to caws vector
   static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
                          std::vector<Caw>& caws);
+  // Returns a vector containing all hashtags in some text.
+  std::vector<std::string> GetHashtags(const std::string& message);
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_

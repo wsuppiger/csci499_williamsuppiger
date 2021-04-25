@@ -58,6 +58,14 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
     CawReply reply;
     reply.ParseFromString(func_reply.message);
     any.PackFrom(reply);
+
+    // Here we will perform stream functionality
+    auto stream_method = CawFunction::stream_function_map_["stream"];
+    if (stream_method == nullptr) {
+      LOG(WARNING) << "not found in CawFunction class for function stream";
+      return Status(StatusCode::NOT_FOUND, "function call not found");
+    }
+    stream_method(any, current_streamers_);
   } else if (event_type == EventType::kFollow) {
     FollowReply reply;
     reply.ParseFromString(func_reply.message);
@@ -78,8 +86,36 @@ Status FazServer::event(ServerContext* context, const EventRequest* request,
 
 Status FazServer::stream(ServerContext* context, const EventRequest* request, 
                 ServerWriter<EventReply>* writer) {
+  const int event_type = request->event_type();
+  std::vector<std::string> get_event = kv_.Get(std::to_string(event_type));
+  std::string event_function;
+  if (get_event.empty()) {
+    LOG(WARNING) << "event is unhooked for event type " << event_type;
+    return Status(StatusCode::NOT_FOUND, "event in not hooked");
+  } else {
+    event_function = get_event.back(); // Name of function "stream"
+  } // Checking if stream function is hooked, will not use here
 
-  // This function calls the corresponding caw.h function
+  // Creating a callback function that will write 
+  // to THIS instance of a serverwriter
+  const std::function<void(const Any&)> 
+  writeToServerWriter = [&writer](const Any& response) {
+    EventReply reply; 
+    *reply.mutable_payload() = response;
+    writer->Write(reply);
+  };
+
+  StreamRequest streamRequest;
+  request->payload().UnpackTo(&streamRequest);
+
+  // Registering current ServerWriter as a streamer on our FazServer
+  // We will use the keyValue store to write messages to this streamer 
+  // Whenever a caw is posted. 
+  if (current_streamers_.find(streamRequest.hashtag()) == current_streamers_.end()) {
+    current_streamers_[streamRequest.hashtag()] = { writeToServerWriter };
+  } else { 
+    current_streamers_[streamRequest.hashtag()].push_back(writeToServerWriter);
+  }
   return Status::OK;
 }
 }  // namespace csci499

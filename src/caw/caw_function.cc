@@ -18,8 +18,13 @@ std::unordered_map<std::string,
                                   {"caw", &CawFunction::CawCreate},
                                   {"follow", &CawFunction::Follow},
                                   {"read", &CawFunction::Read},
-                                  {"profile", &CawFunction::Profile},
-                                  {"stream", &CawFunction::Stream}};
+                                  {"profile", &CawFunction::Profile}};
+                                  
+std::unordered_map<std::string, std::function<CawFuncReply(const Any&,
+                                              std::unordered_map<std::string, 
+                                                std::vector<std::function<
+                                                  void(const Any&)>> >&)
+                  > > CawFunction::stream_function_map_ = {{"stream", &CawFunction::Stream}};
 
 CawFuncReply CawFunction::RegisterUser(const Any& payload,
                                        KeyValueInterface& kv) {
@@ -150,9 +155,13 @@ CawFuncReply CawFunction::Profile(const Any& payload, KeyValueInterface& kv) {
   return {Status::OK, reply.SerializeAsString()};
 }
 
-CawFuncReply CawFunction::Stream(const Any& payload, KeyValueInterface& kv) {
-  // This function interracts with the kvstore
-  // to accomplish streaming functionality
+CawFuncReply CawFunction::Stream(const Any& payload,
+                                  std::unordered_map<std::string, 
+                                    std::vector<std::function<void(const Any&)>> >&
+                                  current_streamers_) {
+  // This function will parse the payload and look for any hashtags 
+  // It will then call the functions for that corresponding hashtag 
+  // Without ever interracting with the kvstore
   return {Status::OK, ""};
 }
 
@@ -171,6 +180,11 @@ void CawFunction::ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
   for (const auto& c : children) {
     ReadReplys(c, kv, caws);
   }
+}
+
+std::vector<std::string> GetHashtags(const std::string& message) {
+  // I will pass a caw text and find tags here
+  return {};
 }
 
 }  // namespace csci499
