@@ -56,7 +56,10 @@ class FazServer final : public FazService::Service {
  private:
   // key value client used to connect to kv server
   KeyValueClient kv_;
-
+  // This is a map that will store callback functions (value) for each 
+  // streamer with their associated hashtag (key)
+  // Each callback will have an instance of a writer which can be used to 
+  // send data back to the streamer
   std::unordered_map<std::string, std::vector<std::function<void(const Any&)>> >
     current_streamers_;
 };

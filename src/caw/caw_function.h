@@ -68,6 +68,7 @@ class CawFunction {
 
   // map names of stream_functions to functions
   // Seperate because stream_function declaration is different
+  // TODO: Consider using a typedef
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&,
                                               const std::unordered_map<std::string, 
@@ -82,7 +83,7 @@ class CawFunction {
   static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
                          std::vector<Caw>& caws);
   // Returns a vector containing all hashtags in some text.
-  std::vector<std::string> GetHashtags(const std::string& key);
+  std::vector<std::string> GetHashtags(const std::string& message);
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_

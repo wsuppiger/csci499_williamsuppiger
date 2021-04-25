@@ -156,7 +156,7 @@ CawFuncReply CawFunction::Profile(const Any& payload, KeyValueInterface& kv) {
 }
 
 CawFuncReply CawFunction::Stream(const Any& payload,
-                                  const std::unordered_map<std::string, 
+                                  std::unordered_map<std::string, 
                                     std::vector<std::function<void(const Any&)>> >&
                                   current_streamers_) {
   // This function will parse the payload and look for any hashtags 
@@ -182,7 +182,7 @@ void CawFunction::ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
   }
 }
 
-std::vector<std::string> GetHashtags(const std::string& key) {
+std::vector<std::string> GetHashtags(const std::string& message) {
   // I will pass a caw text and find tags here
   return {};
 }
