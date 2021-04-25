@@ -246,9 +246,14 @@ int main(int argc, char* argv[]) {
       caw::CawReply reply;
       response.payload().UnpackTo(&reply);
       caw::Caw caw = reply.caw();
-      std::cout << "[" << std::put_time(std::localtime(&t_c), "%F %T") << "]"
-                  << std::string(caw_stack.size() * 4, '-') << " #" << caw.id()
-                  << " " << caw.username() << ": " << caw.text() << std::endl; 
+
+      // print out caw in indented pretty format
+      std::chrono::seconds time_seconds(caw.timestamp().seconds());
+      std::chrono::time_point<std::chrono::system_clock> tp(time_seconds);
+      auto t_c = std::chrono::system_clock::to_time_t(tp);
+      std::cout << "[" << std::put_time(std::localtime(&t_c), "%F %T") << "] "
+                  << "#" << caw.id() << " " << caw.username() << ": " 
+                  << caw.text() << std::endl; 
     };
     grpc::Status status = client.Stream(kStream, payload, print_caw);
     if (!status.ok()) {
