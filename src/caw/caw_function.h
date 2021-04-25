@@ -63,6 +63,9 @@ class CawFunction {
                               std::vector<std::function<bool(const Any&)>> >&
                                 current_streamers_);
 
+  // Returns a vector containing all hashtags in some text.
+  static std::vector<std::string> GetHashtags(const std::string& message);
+
   // map names of functions to functions
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&, KeyValueInterface&)> >
@@ -84,8 +87,6 @@ class CawFunction {
   // DFS recursively search for all child Caws and add to caws vector
   static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
                          std::vector<Caw>& caws);
-  // Returns a vector containing all hashtags in some text.
-  static std::vector<std::string> GetHashtags(const std::string& message);
   // Lock enables thread safe operation
   // during the 'Stream' function. Becuase 
   // that access shared memory (current_streamers_)

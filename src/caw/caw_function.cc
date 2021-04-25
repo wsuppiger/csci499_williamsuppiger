@@ -211,7 +211,7 @@ void CawFunction::ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
 
 std::vector<std::string> CawFunction::GetHashtags(const std::string& message) {
   std::vector<std::string> hashtags; 
-  string hashtag = ""; 
+  std::string hashtag = ""; 
   int i=0; 
   while (i < message.size()) {
     if (message[i] == '#') {
