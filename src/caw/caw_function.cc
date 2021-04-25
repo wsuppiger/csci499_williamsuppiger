@@ -23,8 +23,11 @@ std::unordered_map<std::string,
 std::unordered_map<std::string, std::function<CawFuncReply(const Any&,
                                               std::unordered_map<std::string, 
                                                 std::vector<std::function<
-                                                  void(const Any&)>> >&)
+                                                  bool(const Any&)>> >&)
                   > > CawFunction::stream_function_map_ = {{"stream", &CawFunction::Stream}};
+
+// Declaring static lock
+std::mutex CawFunction::lock_;
 
 CawFuncReply CawFunction::RegisterUser(const Any& payload,
                                        KeyValueInterface& kv) {
@@ -157,12 +160,36 @@ CawFuncReply CawFunction::Profile(const Any& payload, KeyValueInterface& kv) {
 
 CawFuncReply CawFunction::Stream(const Any& payload,
                                   std::unordered_map<std::string, 
-                                    std::vector<std::function<void(const Any&)>> >&
+                                    std::vector<std::function<bool(const Any&)>> >&
                                   current_streamers_) {
-  // This function will parse the payload and look for any hashtags 
-  // It will then call the functions for that corresponding hashtag 
-  // Without ever interracting with the kvstore
-  return {Status::OK, ""};
+  CawReply reply; 
+  payload.UnpackTo(&reply);
+  Caw caw = reply.caw();
+  std::string caw_text = caw.text();
+  // Using a lock to prevent race conditions while 
+  // multiple threads interract with the current_streamers_
+  const std::lock_guard<std::mutex> lock(lock_);
+  std::vector<std::string> hashtags = GetHashtags(caw_text);
+  for (std::string hashtag : hashtags) {
+    if (current_streamers_.find(hashtag) == current_streamers_.end()) {
+      // If there are no streamers for this hashtag do nothing
+      continue; 
+    }
+    // Else get the vector of streamers
+    auto& hashtag_streamers = current_streamers_[hashtag];
+    for (auto it = hashtag_streamers.begin(); it != hashtag_streamers.end();) {
+      // We will pass in the any object that wraps
+      // the CawReply to the callback function
+      // this will be unwrapped and printed out to the streamers
+      bool server_is_alive = (*it)(payload);
+      if (!server_is_alive) {
+        hashtag_streamers.erase(it);
+      } else {
+        ++it; 
+      }
+    }
+  }
+  return {Status::OK, reply.SerializeAsString()};
 }
 
 bool CawFunction::UserExists(const std::string& username,
@@ -182,9 +209,25 @@ void CawFunction::ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
   }
 }
 
-std::vector<std::string> GetHashtags(const std::string& message) {
-  // I will pass a caw text and find tags here
-  return {};
+std::vector<std::string> CawFunction::GetHashtags(const std::string& message) {
+  std::vector<std::string> hashtags; 
+  string hashtag = ""; 
+  int i=0; 
+  while (i < message.size()) {
+    if (message[i] == '#') {
+      i++; 
+      while (i < message.size() && std::isalnum(message[i])) {
+        hashtag += message[i++];
+      } // Stop at a space or some other non alphanum char
+      if (hashtag != "") {
+        hashtags.push_back(hashtag);
+        hashtag = "";
+      }
+    } else {
+      i++;
+    }
+  }
+  return hashtags;
 }
 
 }  // namespace csci499
