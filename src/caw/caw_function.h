@@ -57,7 +57,7 @@ class CawFunction {
 
   // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
   static CawFuncReply Stream(const Any& payload,
-                             const std::unordered_map<std::string, 
+                              std::unordered_map<std::string, 
                               std::vector<std::function<void(const Any&)>> >&
                                 current_streamers_);
 
@@ -71,7 +71,7 @@ class CawFunction {
   // TODO: Consider using a typedef
   static std::unordered_map<
       std::string, std::function<CawFuncReply(const Any&,
-                                              const std::unordered_map<std::string, 
+                                              std::unordered_map<std::string, 
                                                 std::vector<std::function<
                                                   void(const Any&)>> >&)
                                 > > stream_function_map_;

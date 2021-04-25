@@ -21,7 +21,7 @@ std::unordered_map<std::string,
                                   {"profile", &CawFunction::Profile}};
                                   
 std::unordered_map<std::string, std::function<CawFuncReply(const Any&,
-                                              const std::unordered_map<std::string, 
+                                              std::unordered_map<std::string, 
                                                 std::vector<std::function<
                                                   void(const Any&)>> >&)
                   > > CawFunction::stream_function_map_ = {{"stream", &CawFunction::Stream}};
