@@ -98,11 +98,11 @@ Status FazServer::stream(ServerContext* context, const EventRequest* request,
 
   // Creating a callback function that will write 
   // to THIS instance of a serverwriter
-  const std::function<void(const Any&)> 
+  const std::function<bool(const Any&)> 
   writeToServerWriter = [&writer](const Any& response) {
     EventReply reply; 
     *reply.mutable_payload() = response;
-    writer->Write(reply);
+    return writer->Write(reply);
   };
 
   StreamRequest streamRequest;

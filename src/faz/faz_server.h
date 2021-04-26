@@ -60,7 +60,7 @@ class FazServer final : public FazService::Service {
   // streamer with their associated hashtag (key)
   // Each callback will have an instance of a writer which can be used to 
   // send data back to the streamer
-  std::unordered_map<std::string, std::vector<std::function<void(const Any&)>> >
+  std::unordered_map<std::string, std::vector<std::function<bool(const Any&)>> >
     current_streamers_;
 };
 }  // namespace csci499

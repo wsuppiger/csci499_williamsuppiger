@@ -378,4 +378,34 @@ TEST(Read, TwoReply) {
   ASSERT_EQ(read_reply.caws()[1].id(), caw_child_id1);
   ASSERT_EQ(read_reply.caws()[2].id(), caw_child_id2);
 }
+
+// Simple test to see if Hash function parses correctly
+TEST(ParseHashtag, SimpleParse) {
+  std::string text = "Hello this is a #hashtag #caw #faz";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 3);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+  ASSERT_EQ(hashtags[2], "faz");
+}
+
+// A little more challenging test for the parse function
+TEST(ParseHashtag, NonSimpleParse) {
+  std::string text = "Hello this is a #hashtag#caw''''''#faz Ok testing #cawfaz";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 4);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+  ASSERT_EQ(hashtags[2], "faz");
+  ASSERT_EQ(hashtags[3], "cawfaz");
+}
+
+// A complex test for the parse function
+TEST(ParseHashtag, ComplexParse) {
+  std::string text = "*hashtag#hashtag#caw'''faz..#";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 2);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+}
 }  // namespace

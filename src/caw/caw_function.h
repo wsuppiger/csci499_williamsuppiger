@@ -55,11 +55,16 @@ class CawFunction {
   // shows following and followers for user
   static CawFuncReply Profile(const Any& payload, KeyValueInterface& kv);
 
-  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  // This function will parse the payload and look for any hashtags 
+  // It will then call the callback functions for that corresponding 
+  // hashtag without ever interracting with the kvstore
   static CawFuncReply Stream(const Any& payload,
                               std::unordered_map<std::string, 
-                              std::vector<std::function<void(const Any&)>> >&
+                              std::vector<std::function<bool(const Any&)>> >&
                                 current_streamers_);
+
+  // Returns a vector containing all hashtags in some text.
+  static std::vector<std::string> GetHashtags(const std::string& message);
 
   // map names of functions to functions
   static std::unordered_map<
@@ -73,7 +78,7 @@ class CawFunction {
       std::string, std::function<CawFuncReply(const Any&,
                                               std::unordered_map<std::string, 
                                                 std::vector<std::function<
-                                                  void(const Any&)>> >&)
+                                                  bool(const Any&)>> >&)
                                 > > stream_function_map_;
 
  private:
@@ -82,8 +87,10 @@ class CawFunction {
   // DFS recursively search for all child Caws and add to caws vector
   static void ReadReplys(const std::string& caw_id, KeyValueInterface& kv,
                          std::vector<Caw>& caws);
-  // Returns a vector containing all hashtags in some text.
-  std::vector<std::string> GetHashtags(const std::string& message);
+  // Lock enables thread safe operation
+  // during the 'Stream' function. Becuase 
+  // that access shared memory (current_streamers_)
+  static std::mutex lock_;
 };
 }  // namespace csci499
 #endif  // SRC_CAW_CAW_FUNCTION_H_
