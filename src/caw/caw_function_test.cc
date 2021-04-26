@@ -449,11 +449,11 @@ TEST(Stream, SimpleStreamTest) {
 
   // Now testing streaming to multiple users
   int y=0;
-  auto secondCallbackFunc = [&y](const Any&) {
+  auto second_callback_func = [&y](const Any&) {
     y++;
     return true;
   };
-  current_streamers_["test"].push_back(secondCallbackFunc);
+  current_streamers_["test"].push_back(second_callback_func);
 
   CawFunction::Stream(any, current_streamers_);
 
