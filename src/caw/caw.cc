@@ -64,7 +64,8 @@ int main(int argc, char* argv[]) {
                                                 {kCaw, "caw"},
                                                 {kFollow, "follow"},
                                                 {kRead, "read"},
-                                                {kProfile, "profile"}};
+                                                {kProfile, "profile"},
+                                                {kStream, "stream"}};
   auto payload = google::protobuf::Any();
 
   if (command == input::kInvalidCommand) {
@@ -238,7 +239,28 @@ int main(int argc, char* argv[]) {
       std::cout << std::endl;
     }
   } else if (command == input::kStream) {
-    // Since we will have to print multiple
+    caw::StreamRequest request;
+    request.set_hashtag(FLAGS_stream);
+    payload.PackFrom(request);
+    std::function<void(faz::EventReply)> print_caw = [](faz::EventReply response) {
+      caw::CawReply reply;
+      response.payload().UnpackTo(&reply);
+      caw::Caw caw = reply.caw();
+
+      // print out caw in indented pretty format
+      std::chrono::seconds time_seconds(caw.timestamp().seconds());
+      std::chrono::time_point<std::chrono::system_clock> tp(time_seconds);
+      auto t_c = std::chrono::system_clock::to_time_t(tp);
+      std::cout << "[" << std::put_time(std::localtime(&t_c), "%F %T") << "] "
+                  << "#" << caw.id() << " " << caw.username() << ": " 
+                  << caw.text() << std::endl; 
+    };
+    grpc::Status status = client.Stream(kStream, payload, print_caw);
+    if (!status.ok()) {
+      LOG(WARNING) << "error while executing stream: " << status.error_message();
+      std::cout << status.error_message() << std::endl;
+      return 1;
+    }
   }
   return 0;
 }

@@ -116,6 +116,9 @@ Status FazServer::stream(ServerContext* context, const EventRequest* request,
   } else { 
     current_streamers_[streamRequest.hashtag()].push_back(writeToServerWriter);
   }
+
+  while (true) {}
+    
   return Status::OK;
 }
 }  // namespace csci499
