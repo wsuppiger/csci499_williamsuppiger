@@ -241,6 +241,7 @@ int main(int argc, char* argv[]) {
   } else if (command == input::kStream) {
     caw::StreamRequest request;
     request.set_hashtag(FLAGS_stream);
+    request.set_username(FLAGS_user);
     payload.PackFrom(request);
     std::function<void(faz::EventReply)> print_caw = [](faz::EventReply response) {
       caw::CawReply reply;

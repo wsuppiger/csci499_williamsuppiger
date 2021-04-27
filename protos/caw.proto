@@ -65,8 +65,10 @@ message ProfileReply {
 
 message StreamRequest {
   string hashtag = 1;
+  string username = 2;
 }
 
 message StreamReply {
-  Caw caw = 1;
+  // Empty because success/failure is signaled via GRPC status
+  // Caw Streams are in the form of CawReplies
 }
