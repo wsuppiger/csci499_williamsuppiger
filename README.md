@@ -78,6 +78,10 @@ Gets the user’s profile of following and followers:
 
 `./caw --user <username> --profile`
 
+Allows a user to stream a specific hashtag:
+
+`./caw --user <username> --stream <hashtag>`
+
 Lists available flags:
 
 `./caw --help`

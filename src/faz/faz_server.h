@@ -49,7 +49,8 @@ class FazServer final : public FazService::Service {
   Status event(ServerContext* context, const EventRequest* request,
                EventReply* reply) override;
 
-  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  // Registers a user as a streaming user for some particular hashtag
+  // The streaming functionality is performed whenever a caw is posted
   Status stream(ServerContext* context, const EventRequest* request, 
                 ServerWriter<EventReply>* writer) override;
 

@@ -108,6 +108,14 @@ Status FazServer::stream(ServerContext* context, const EventRequest* request,
   StreamRequest streamRequest;
   request->payload().UnpackTo(&streamRequest);
 
+  // Checking if the user exists
+  std::vector<std::string> users = kv_.Get("users");
+  auto user_ptr = std::find(users.begin(), users.end(), streamRequest.username());
+  if (user_ptr == users.end()) {
+    LOG(WARNING) << "the user does not exist";
+    return {Status(StatusCode::UNAVAILABLE, "the user does not exist")};
+  }
+
   // Registering current ServerWriter as a streamer on our FazServer
   // We will use the keyValue store to write messages to this streamer 
   // Whenever a caw is posted. 
