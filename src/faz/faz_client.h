@@ -65,7 +65,9 @@ class FazClient {
   // send an event request to faz server and return proto Reply object
   Status Event(int event_type, Any& payload, EventReply& reply);
 
-  // TODO: WRITE FUNCTION DEFINITION WHEN COMPLETE
+  // Reads any messages posted to a registered stream 
+  // And passes them into a callback function to print 
+  // Information to the user
   Status Stream(int event_type, Any& payload,
                 std::function<void(EventReply)>& print_caw);
  private:
