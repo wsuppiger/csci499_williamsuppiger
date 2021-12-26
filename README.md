@@ -31,10 +31,14 @@ To run the Caw test cases:
 
 `./caw_function_test`
 
-### Run Components
+### Run C++ Components
 **To run the Key Value storage application:**
 
 `./key_value_server`
+
+Restore its data from a file and store its data to a file:
+
+`./key_value_server --store <file>`
 
 **To run the Faz (FaaS) application:**
 
@@ -74,6 +78,41 @@ Gets the user’s profile of following and followers:
 
 `./caw --user <username> --profile`
 
+Allows a user to stream a specific hashtag:
+
+`./caw --user <username> --stream <hashtag>`
+
 Lists available flags:
 
 `./caw --help`
+
+### Run Go CLI Component
+**To Setup Go build:**
+
+*Make sure to follow all the steps in "Setup VM and Project" first.*
+
+To install Go, follow the directions found [here](https://levelup.gitconnected.com/installing-go-on-ubuntu-b443a8f0eb55) to install Go 1.16.1.
+
+In the project root:
+
+```
+export GO111MODULE=on  # Enable module mode
+go get google.golang.org/protobuf/cmd/protoc-gen-go \
+         google.golang.org/grpc/cmd/protoc-gen-go-grpc
+sudo apt install -y protobuf-compiler
+
+mkdir src/go_caw/faz && mkdir src/go_caw/caw
+protoc --go_out=src/go_caw/faz --go_opt=paths=source_relative \
+    --go-grpc_out=src/go_caw/faz --go-grpc_opt=paths=source_relative \
+    protos/faz.proto
+protoc --go_out=src/go_caw/caw --go_opt=paths=source_relative \
+    --go-grpc_out=src/go_caw/caw --go-grpc_opt=paths=source_relative \
+    protos/caw.proto
+go mod download
+go build ./src/go_caw
+```
+**To Run the Caw CLI tool:**
+
+*Uses all the same flags as the C++ implementation*
+
+`./go_caw --flags`

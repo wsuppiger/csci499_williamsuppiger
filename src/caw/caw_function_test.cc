@@ -378,4 +378,86 @@ TEST(Read, TwoReply) {
   ASSERT_EQ(read_reply.caws()[1].id(), caw_child_id1);
   ASSERT_EQ(read_reply.caws()[2].id(), caw_child_id2);
 }
+
+// Simple test to see if Hash function parses correctly
+TEST(ParseHashtag, SimpleParse) {
+  std::string text = "Hello this is a #hashtag #caw #faz";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 3);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+  ASSERT_EQ(hashtags[2], "faz");
+}
+
+// A little more challenging test for the parse function
+TEST(ParseHashtag, NonSimpleParse) {
+  std::string text = "Hello this is a #hashtag#caw''''''#faz Ok testing #cawfaz";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 4);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+  ASSERT_EQ(hashtags[2], "faz");
+  ASSERT_EQ(hashtags[3], "cawfaz");
+}
+
+// A complex test for the parse function
+TEST(ParseHashtag, ComplexParse) {
+  std::string text = "*hashtag#hashtag#caw'''faz..#";
+  std::vector<std::string> hashtags = CawFunction::GetHashtags(text);
+  ASSERT_EQ(hashtags.size(), 2);
+  ASSERT_EQ(hashtags[0], "hashtag");
+  ASSERT_EQ(hashtags[1], "caw");
+}
+
+// Tests the stream functionality 
+// Simulates 4 users posting a caw
+// With #test as well as one user
+// posting a caw being streamed to 
+// multiple users
+TEST(Stream, SimpleStreamTest) {
+  std::unordered_map<std::string, 
+                    std::vector<std::function<bool(const Any&)>> >
+                  current_streamers_;
+
+  // Creating a caw 
+  KeyValue kv;
+  CreateUser(kv, "user1");
+  CawRequest request;
+  auto caw_method = CawFunction::function_map_["caw"];
+  request.set_username("user1");
+  request.set_text("sample #test");
+  Any any = Any();
+  any.PackFrom(request);
+  CawFuncReply reply = caw_method(any, kv);
+  CawReply caw_reply;
+  caw_reply.ParseFromString(reply.message);
+  any.PackFrom(caw_reply);
+
+  int x = 0; 
+  auto callbackFunc = [&x](const Any&) {
+    x++;
+    return true;
+  };
+  current_streamers_["test"] = { callbackFunc };
+
+  CawFunction::Stream(any, current_streamers_);
+  CawFunction::Stream(any, current_streamers_);
+  CawFunction::Stream(any, current_streamers_);
+  CawFunction::Stream(any, current_streamers_);
+
+  ASSERT_EQ(x, 4);
+
+  // Now testing streaming to multiple users
+  int y=0;
+  auto second_callback_func = [&y](const Any&) {
+    y++;
+    return true;
+  };
+  current_streamers_["test"].push_back(second_callback_func);
+
+  CawFunction::Stream(any, current_streamers_);
+
+  ASSERT_EQ(x, 5);
+  ASSERT_EQ(y, 1);
+}
 }  // namespace

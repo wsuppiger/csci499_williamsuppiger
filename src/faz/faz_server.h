@@ -16,6 +16,7 @@ using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
 using grpc::ServerReaderWriter;
+using grpc::ServerWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
@@ -28,6 +29,7 @@ using faz::HookReply;
 using faz::HookRequest;
 using faz::UnhookReply;
 using faz::UnhookRequest;
+using caw::StreamRequest;
 
 class FazServer final : public FazService::Service {
  public:
@@ -47,9 +49,20 @@ class FazServer final : public FazService::Service {
   Status event(ServerContext* context, const EventRequest* request,
                EventReply* reply) override;
 
+  // Registers a user as a streaming user for some particular hashtag
+  // The streaming functionality is performed whenever a caw is posted
+  Status stream(ServerContext* context, const EventRequest* request, 
+                ServerWriter<EventReply>* writer) override;
+
  private:
   // key value client used to connect to kv server
   KeyValueClient kv_;
+  // This is a map that will store callback functions (value) for each 
+  // streamer with their associated hashtag (key)
+  // Each callback will have an instance of a writer which can be used to 
+  // send data back to the streamer
+  std::unordered_map<std::string, std::vector<std::function<bool(const Any&)>> >
+    current_streamers_;
 };
 }  // namespace csci499
 #endif  // SRC_FAZ_FAZ_SERVER_H_

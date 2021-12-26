@@ -23,6 +23,7 @@ using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
 using grpc::StatusCode;
+using grpc::ClientReader;
 
 using faz::EventReply;
 using faz::EventRequest;
@@ -44,6 +45,8 @@ using caw::ReadRequest;
 using caw::RegisteruserReply;
 using caw::RegisteruserRequest;
 using caw::Timestamp;
+using caw::StreamRequest;
+using caw::StreamReply;
 
 // faz client implementaion for interacting with faz server
 class FazClient {
@@ -61,6 +64,12 @@ class FazClient {
 
   // send an event request to faz server and return proto Reply object
   Status Event(int event_type, Any& payload, EventReply& reply);
+
+  // Reads any messages posted to a registered stream 
+  // And passes them into a callback function to print 
+  // Information to the user
+  Status Stream(int event_type, Any& payload,
+                std::function<void(EventReply)>& print_caw);
  private:
   // faz storage object
   std::unique_ptr<FazService::Stub> stub_;

@@ -31,6 +31,8 @@ DEFINE_string(follow, "", "Starts following the given username");
 DEFINE_string(read, "", "Reads the caw thread starting at the given id");
 DEFINE_bool(profile, false,
             "Gets the user’s profile of following and followers");
+DEFINE_string(stream, "",
+            "Streams all new caws containing the string passed in");
 
 // wrapper namespace to avoid clashing with backend enum event types
 namespace input {
@@ -45,6 +47,7 @@ enum CommandInput {
   kFollow,
   kRead,
   kProfile,
+  kStream,
 };
 }  // namespace input
 
@@ -61,7 +64,8 @@ int main(int argc, char* argv[]) {
                                                 {kCaw, "caw"},
                                                 {kFollow, "follow"},
                                                 {kRead, "read"},
-                                                {kProfile, "profile"}};
+                                                {kProfile, "profile"},
+                                                {kStream, "stream"}};
   auto payload = google::protobuf::Any();
 
   if (command == input::kInvalidCommand) {
@@ -234,6 +238,30 @@ int main(int argc, char* argv[]) {
       }
       std::cout << std::endl;
     }
+  } else if (command == input::kStream) {
+    caw::StreamRequest request;
+    request.set_hashtag(FLAGS_stream);
+    request.set_username(FLAGS_user);
+    payload.PackFrom(request);
+    std::function<void(faz::EventReply)> print_caw = [](faz::EventReply response) {
+      caw::CawReply reply;
+      response.payload().UnpackTo(&reply);
+      caw::Caw caw = reply.caw();
+
+      // print out caw in indented pretty format
+      std::chrono::seconds time_seconds(caw.timestamp().seconds());
+      std::chrono::time_point<std::chrono::system_clock> tp(time_seconds);
+      auto t_c = std::chrono::system_clock::to_time_t(tp);
+      std::cout << "[" << std::put_time(std::localtime(&t_c), "%F %T") << "] "
+                  << "#" << caw.id() << " " << caw.username() << ": " 
+                  << caw.text() << std::endl; 
+    };
+    grpc::Status status = client.Stream(kStream, payload, print_caw);
+    if (!status.ok()) {
+      LOG(WARNING) << "error while executing stream: " << status.error_message();
+      std::cout << status.error_message() << std::endl;
+      return 1;
+    }
   }
   return 0;
 }
@@ -242,10 +270,11 @@ int GetCommand() {
   // boolean values for if each field contains a value
   bool registeruser = !FLAGS_registeruser.empty(), user = !FLAGS_user.empty(),
        caw = !FLAGS_caw.empty(), reply = !FLAGS_reply.empty(),
-       follow = !FLAGS_follow.empty(), read = !FLAGS_read.empty(),
-       profile = FLAGS_profile, hook = FLAGS_hookall, unhook = FLAGS_unhookall;
+       follow = !FLAGS_follow.empty(), read = !FLAGS_read.empty(), 
+       stream = !FLAGS_stream.empty(), profile = FLAGS_profile,
+       hook = FLAGS_hookall, unhook = FLAGS_unhookall;
   if (!registeruser && !user && !caw && !reply && !follow && !read &&
-      !profile) {
+      !profile && !stream) {
     if (hook && !unhook) {
       return input::kHookAll;  // ./caw --hookall
     } else if (!hook && unhook) {
@@ -253,22 +282,24 @@ int GetCommand() {
     }
   } else if (!hook && !unhook) {
     if (registeruser && !user && !caw && !reply && !follow && !read &&
-        !profile) {
+        !profile && !stream) {
       return input::kRegisteruser;  // ./caw --registeruser <username>
     } else if (!registeruser && user) {
-      if (caw && !follow && !read && !profile) {
+      if (caw && !follow && !read && !profile && !stream) {
         if (caw && !reply) {
           return input::kCaw;  // ./caw --user <username> --caw <caw text>
         } else if (caw && reply) {
           return input::kReply;  // ./caw --user <username> --caw <caw text>
                                  // --reply <reply caw id>
         }
-      } else if (!caw && follow && !read && !profile) {
+      } else if (!caw && follow && !read && !profile && !stream) {
         return input::kFollow;  // ./caw --user <username> --follow <username>
-      } else if (!caw && !follow && read && !profile) {
+      } else if (!caw && !follow && read && !profile && !stream) {
         return input::kRead;  // ./caw --user <username> --read <caw id>
-      } else if (!caw && !follow && !read && profile) {
+      } else if (!caw && !follow && !read && profile && !stream) {
         return input::kProfile;  // ./caw --user <username> --profile
+      } else if (!caw && !follow && !read && !profile && stream) {
+        return input::kStream; // ./caw --user <username> --stream <hashtag>
       }
     }
   }

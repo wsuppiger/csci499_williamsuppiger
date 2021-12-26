@@ -33,6 +33,7 @@ class KeyValueClient : public KeyValueInterface {
   void Remove(const std::string& key) override;
 
  private:
+
   // key value storage object
   std::unique_ptr<KeyValueStore::Stub> stub_;
 };
