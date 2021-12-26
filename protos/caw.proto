@@ -1,7 +1,7 @@
 
 syntax = "proto3";
 
-option go_package = "github.com/williamsuppiger/csci499_williamsuppiger/protos/go/caw";
+option go_package = "github.com/wsuppiger/csci499_williamsuppiger/protos/go/caw";
 
 package caw;
 

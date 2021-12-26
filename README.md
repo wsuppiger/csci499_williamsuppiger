@@ -15,7 +15,7 @@ Guest VM:
 sudo apt-get update && sudo apt-get upgrade
 sudo apt-get install build-essential
 sudo apt-get install cmake
-git clone https://github.com/williamsuppiger/csci499_williamsuppiger.git
+git clone https://github.com/wsuppiger/csci499_williamsuppiger.git
 cd csci499_williamsuppiger
 mkdir build && cd build
 cmake ..

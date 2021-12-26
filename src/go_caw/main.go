@@ -10,8 +10,8 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"
-	caw "github.com/williamsuppiger/csci499_williamsuppiger/src/go_caw/caw/protos"
-	faz "github.com/williamsuppiger/csci499_williamsuppiger/src/go_caw/faz/protos"
+	caw "github.com/wsuppiger/csci499_williamsuppiger/src/go_caw/caw/protos"
+	faz "github.com/wsuppiger/csci499_williamsuppiger/src/go_caw/faz/protos"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

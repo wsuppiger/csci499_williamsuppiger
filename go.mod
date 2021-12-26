@@ -1,4 +1,4 @@
-module github.com/williamsuppiger/csci499_williamsuppiger
+module github.com/wsuppiger/csci499_williamsuppiger
 
 go 1.16
 
